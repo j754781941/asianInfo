@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.monitor.mapper.AccountAndCRMMapper">
+    <select id="queryACheckResults" resultType="com.asiainfo.monitor.entity.ACheckResult">
+        SELECT
+            CHECK_CYCLE,
+            src_sum_amount,
+            dst_sum_amount,
+            SRC_SUM_RECORD,
+            DST_SUM_RECORD,
+            correct_sum_record,
+            DIFF_SUM_RECORD
+        FROM
+            a_check_result a
+        WHERE
+            BUSI_ID = '7101'
+        AND a.CHECK_STATE = 2
+        AND a.CHECK_CYCLE = DATE_FORMAT(
+            DATE_ADD(NOW(), INTERVAL - 1 DAY),
+            '%Y%m%d'
+        )
+        ORDER BY
+            a.CHECK_END_DATE DESC
+    </select>
+</mapper>

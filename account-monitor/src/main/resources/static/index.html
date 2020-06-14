@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>账务监控系统</title>
+    <link href="assets/css/lib/mmc-chat.css" rel="stylesheet" />
+    <link href="assets/css/lib/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link rel="Shortcut Icon" href="logo/asiainfo.ico" type="image/x-icon" />
+    <link href="assets/css/fontAwesome/css/fontawesome-all.min.css" rel="stylesheet">
+    <link href="assets/css/lib/themify-icons.css" rel="stylesheet">
+    <link href="./css/alert.css" rel="stylesheet"></link>
+    <!-- <link href="css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="css/flow.css" rel="stylesheet" type="text/css"  /> -->
+    <!-- <link href="css/mui.min.css" rel="stylesheet" type="text/css" /> -->
+    <style>
+        h5 {
+            margin-top: -5px;
+        }
+    </style>
+
+</head>
+
+<body style="overflow: hidden;">
+<div class="content-wrap">
+    <div class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <!--<div class="col-lg-15 p-0">-->
+                <div class="page-header">
+                    <div class="page-title">
+                        <img src="logo/asiainfo.png"  width="10%" />
+                        <span style="position:absolute;font-size:xx-large;margin-left: 32%;margin-top: 0.1%;color: #000000;font-weight: bold;">账务监控系统</span>
+                        <button id="content" type="button" class="btn btn-default btn-sm"
+                                style="margin-right: 0px;
+								padding-left: 10px;
+								margin-left: 1100px;
+								background-color: white;
+								color: #000000;">
+                            <span class="glyphicon glyphicon-bullhorn"></span> 外呼告警
+                        </button>
+                        <span id="showdate" style="position: absolute;color: red;font-size:x-large;font-weight:bold;margin-left: 3%;margin-top: 0.5%;"></span>
+                    </div>
+                </div>
+                <!--</div>-->
+                <script>
+
+                </script>
+            </div>
+            <!-- /# row -->
+            <div class="main-content">
+                <div class="row" style="margin-top: -20px;">
+                    <div class="col-lg-3">
+                        <div class="card alert">
+                            <div class="card-header">
+                                <span>专票发票推送失败异常</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="invoiceClick(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="invoice-error"></canvas>
+                            </div>
+                        </div>
+                        <div class="card alert">
+                            <div class="card-header">
+                                <span>负余额账本异常</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="negativeClick(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="negative_balance"></canvas>
+                            </div>
+                        </div>
+                        <div class="card alert">
+                            <div class="card-header">
+                                <span>预存支付计划监控</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="prepaidClick(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="prepaid_payment"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-6">
+                        <div class="card alert" style="height: 50%;">
+                            <div class="card-header">
+                                <span>统计信息</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="barChartClick(2)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card alert">
+                            <div class="card-header">
+                                <span>与上周环比趋势</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="chainInterval()"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body  card-content">
+                                <table class="table table-responsive table-hover ">
+                                    <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>趋势</th>
+                                        <th>名称</th>
+                                        <th>趋势</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>专票发票推送失败异常</td>
+                                        <td class="color-primary" id="invoiceTrend">0.00%</td>
+                                        <td>账务直采上传成功记录</td>
+                                        <td class="color-primary" id="paymentTrend">0.00%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>负余额账本异常</td>
+                                        <td class="color-primary" id="negativeTrend">0.00%</td>
+                                        <td>各渠道缴费量与入表数据异常</td>
+                                        <td class="color-primary" id="canalTrend">0.00%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>预存支付计划处理失败</td>
+                                        <td class="color-primary" id="prepaidTrend">0.00%</td>
+                                        <td>格式八上传记录</td>
+                                        <td class="color-primary" id="format8Trend">0.00%</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# column -->
+                    <div class="col-lg-3">
+                        <div class="card alert">
+                            <div class="card-header">
+                                <span>格式八上传记录</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="format8Click(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="format8"></canvas>
+                            </div>
+                        </div>
+                        <div class="card alert" style="height: 50%;">
+                            <div class="card-header">
+                                <span>账务直采上传文件记录</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="paymentClick(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="payment_complex"></canvas>
+                            </div>
+                        </div>
+                        <div class="card alert" style="height: 50%;">
+                            <div class="card-header">
+                                <span>各渠道缴费量与入表数据异常</span>
+                                <div class="card-header-right-icon">
+                                    <ul>
+                                        <li class="card-close" data-dismiss="alert"><i class="ti-close"></i></li>
+                                        <li><a href="#" onclick="eachTrenchClick(1)"><i class="ti-loop"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="sales-chart  card-content">
+                                <canvas id="each_trench"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align:center;margin:40px auto;">
+            <button id="content" type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-bullhorn"></span> 外呼告警
+            </button>
+        </div>
+
+        <div id="alert" class="">
+            <div class="model-head">
+                <span class="close">&times;</span>
+                <h4 class="modal-title" style="color: red; text-align: center;">外呼告警</h4>
+            </div>
+            <div class="model-content">
+                <div class="main">
+                    <div class="row">
+                        <div class="col-md-12">
+                            BSN端到端监控告警
+                            <input type="button" style="margin-left: 50%;" name="1" value="开启" id="bsn" class="btn btn-success btn-sm" onclick="bsn()" />
+                        </div>
+                        <hr />
+                        <div class="col-md-12">
+                            账单查询监控告警
+                            <input type="button" style="margin-left: 54%;" value="开启" id="queryBill" class="btn btn-success btn-sm" onclick="queryBill()" />
+                        </div>
+                        <hr />
+                        <hr />
+                        <div class="col-md-12">
+                            采预监控告警
+                            <input type="button" style="margin-left: 61.5%;" value="开启" id="accountCRM" class="btn btn-success btn-sm" onclick="accountCRM()" />
+                        </div>
+                        <hr />
+                        <hr />
+                        <div class="col-md-12" style="text-align: center;color: red;">
+                            注意：绿色为开启状态，红色为关闭状态
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mask"></div>
+        <!-- /# container-fluid -->
+    </div>
+    <!-- /# main -->
+</div>
+
+<!-- /# content wrap -->
+<script src="assets/js/lib/jquery.min.js"></script>
+<!-- jquery vendor -->
+<script>
+    var myAlert = document.getElementById("alert");
+    var myMask=document.getElementById('mask');
+
+    $(function(){
+        var inputs = ['bsn','queryBill','accountCRM'];
+        $.ajax({
+            type:"post",
+            url:"http://137.0.245.145:7554/charging/queryAllWarningFlag",
+            dataType:"json",
+            async:true,
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    if(data[i].warningFlag != 1){
+                        $("#"+inputs[i]).attr("class","btn btn-danger btn-sm");
+                        $("#"+inputs[i]).val("关闭");
+                    }
+                }
+            }
+        });
+    })
+
+    $("#content").click(function(){
+        myMask.style.display="block";
+        myAlert.style.display = "block";
+        document.body.style.overflow = "hidden";
+    })
+    $(".close").click(function(){
+        myAlert.style.display = "none";
+        myMask.style.display = "none";
+    })
+    function bsn(){
+        if($("#bsn").attr("class") == "btn btn-success btn-sm"){
+            $("#bsn").attr("class","btn btn-danger btn-sm");
+            $("#bsn").val("关闭");
+            warningCallSwitch(1,0);
+        }else{
+            $("#bsn").attr("class","btn btn-success btn-sm");
+            $("#bsn").val("开启");
+            warningCallSwitch(1,1);
+        }
+    }
+
+    function queryBill(){
+        if($("#queryBill").attr("class") == "btn btn-success btn-sm"){
+            $("#queryBill").attr("class","btn btn-danger btn-sm");
+            $("#queryBill").val("关闭");
+            warningCallSwitch(2,0);
+        }else{
+            $("#queryBill").attr("class","btn btn-success btn-sm");
+            $("#queryBill").val("开启");
+            warningCallSwitch(2,1);
+        }
+    }
+
+    function accountCRM(){
+        if($("#accountCRM").attr("class") == "btn btn-success btn-sm"){
+            $("#accountCRM").attr("class","btn btn-danger btn-sm");
+            $("#accountCRM").val("关闭");
+            warningCallSwitch(3,0);
+        }else{
+            $("#accountCRM").attr("class","btn btn-success btn-sm");
+            $("#accountCRM").val("开启");
+            warningCallSwitch(3,1);
+        }
+    }
+
+    function warningCallSwitch(warningId,warningFlag){
+        // alert("warningId："+warningId);
+        // alert("warningFlag："+warningFlag);
+        $.ajax({
+            type:"post",
+            url:"http://137.0.245.145:7554/charging/warningCallSwitch",
+            contentType: "application/json;charset=UTF-8",
+            dataType:"json",
+            data: JSON.stringify({
+                "warningId" : parseInt(warningId),
+                "warningFlag" : parseInt(warningFlag)
+            }),
+            async:true,
+            success:function(data){
+                // alert("flag"+data.flag);
+            }
+        });
+    }
+</script>
+<script src="assets/js/lib/bootstrap.min.js"></script>
+<!-- bootstrap -->
+<script src="assets/js/lib/mmc-common.js"></script>
+<script src="assets/js/lib/mmc-chat.js"></script>
+<!--  Chart js -->
+<script src="assets/js/lib/chart-js/Chart.bundle.js"></script>
+<script src="assets/js/vue.min.js"></script>
+<script src="assets/js/lib/chart-js/chartjs-init.js"></script>
+<script src="assets/js/scripts.js"></script>
+<!-- // Chart js -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.monitor.mapper.MonitorMapper">
+    <insert id="insertWarnInfo">
+        insert into xxh_bil_yj.VOICE_WARN_INFO（VOICE_WARN_INFO_ID,VOICE_WARN_TYPE_ID,WARN_IP,PORT,CREATE_TIME,HAS_BUILD_SEND)
+        values (xxh_bil_yj.seq_voice.NEXTVAL,#{type},#{host},${num},sysdate,'0')
+    </insert>
+
+    <select id="queryInvoice" resultType="com.asiainfo.monitor.entity.InvoiceInfo">
+        select to_char(create_date,'MM-DD') as invoice_date,count(1) as invoice_count from acctdb.a_gsoap_payment
+      where state = '10R' and result_info &lt;&gt; '专票费用为空'
+            and create_date between sysdate-7 and sysdate
+      group by to_char(create_date,'MM-DD')
+    </select>
+    <select id="queryFormat8" resultType="com.asiainfo.monitor.entity.Format8">
+        select to_char(state_date,'MM-DD') as format_date,count(1) as format_count from  acctdb.B_ECS_ACCT_DATA_HIS
+        where state_date between sysdate-7 and sysdate
+        group by to_char(state_date,'MM-DD')
+    </select>
+    <select id="queryNegativeBalance" resultType="com.asiainfo.monitor.entity.NegativeBalanceInfo">
+        select  to_char(status_date,'MM-DD') as negative_balance_date,count(1) as negative_balance_count from LCH_BILWH.acct_balance_all where balance &lt; 0
+        and status_date between sysdate-7 and sysdate
+        group by to_char(status_date,'MM-DD')
+    </select>
+    <select id="queryPrepaidPayment" resultType="com.asiainfo.monitor.entity.PrepaidPayment">
+        select to_char(create_date,'MM-DD')as prepaid_date,count(1) as prepaid_count
+        from  acctdb.a_inter_pay_to_plan
+        where oper_state in (0,4) and create_date
+        between sysdate-7 and sysdate
+        group by to_char(create_date,'MM-DD')
+    </select>
+    <select id="queryPaymentComplex" resultType="com.asiainfo.monitor.entity.PaymentComplex">
+        select to_char(state_date,'MM-DD') as complex_date,count(1) as complex_count
+        from  LCH_BILWH.A_DATA_COLLECT_STATISTIC_LIST
+        where state_date between sysdate-7 and sysdate and state='1'
+        group by to_char(state_date,'MM-DD')
+    </select>
+    <select id="queryCRMInfos" resultType="com.asiainfo.monitor.entity.CRMInfo" statementType="STATEMENT">
+        select to_char(a.create_date,'MM-DD') as crm_date,count(1) as crm_count from acctdb.business_record a,acctdb.payment_${queryDate} b
+        where a.business_type=b.payment_channel_id and a.payment_id=b.payment_id and a.business_type = '2014'
+        and a.amount!=b.amount and b.amount!=0
+        and a.create_date between sysdate-7 and sysdate
+        group by to_char(a.create_date,'MM-DD')
+    </select>
+    <select id="queryNetworkLobbies" resultType="com.asiainfo.monitor.entity.NetworkLobby" statementType="STATEMENT">
+        select to_char(a.create_date,'MM-DD') as network_date,count(1) as network_count from acctdb.business_record a,acctdb.payment_${queryDate} b
+        where a.business_type=b.payment_channel_id and a.payment_id=b.payment_id and a.business_type = '1004'
+        and a.amount!=b.amount and b.amount!=0
+        and a.create_date between sysdate-7 and sysdate
+        group by to_char(a.create_date,'MM-DD')
+    </select>
+    <select id="queryIPTVInfos" resultType="com.asiainfo.monitor.entity.IPTVInfo" statementType="STATEMENT">
+        select to_char(a.create_date,'MM-DD') as iptv_date,count(1) as iptv_count from acctdb.business_record a,acctdb.payment_${queryDate} b
+        where a.business_type=b.payment_channel_id and a.payment_id=b.payment_id and a.business_type = '2011'
+        and a.amount!=b.amount and b.amount!=0
+        and a.create_date between sysdate-7 and sysdate
+        group by to_char(a.create_date,'MM-DD')
+    </select>
+    <select id="queryPrepaidPaymentError" resultType="com.asiainfo.monitor.entity.PrepaidPaymentError">
+        select to_char(create_date,'MM-DD')as prepaid_error_date,count(1) as prepaid_error_count
+        from  acctdb.a_inter_pay_to_plan
+        where oper_state = 2 and create_date
+        between sysdate-7 and sysdate
+        group by to_char(create_date,'MM-DD')
+    </select>
+    <select id="queryPaymentComplexError" resultType="com.asiainfo.monitor.entity.PaymentComplexError">
+        select to_char(state_date,'MM-DD') as complex_error_date,count(1) as complex_error_count
+        from  LCH_BILWH.A_DATA_COLLECT_STATISTIC_LIST
+        where state_date between sysdate-7 and sysdate and state='0'
+        group by to_char(state_date,'MM-DD')
+    </select>
+    <select id="queryMaxSequence" resultType="java.lang.Long">
+        select MAX(VOICE_WARN_INFO_ID) from xxh_bil_yj.VOICE_WARN_INFO
+    </select>
+
+</mapper>

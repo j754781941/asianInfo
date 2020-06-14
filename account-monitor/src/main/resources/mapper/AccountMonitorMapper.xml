@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.monitor.mapper.AccountMonitorMapper">
+    <update id="updateWaringCallSwitch">
+        update LCH_BILWH.warning_call_config set warning_flag = #{warningFlag}
+        where warning_id = #{warningId}
+    </update>
+
+    <select id="queryChargingDownloadConfigByDay"
+            resultType="com.asiainfo.monitor.entity.ChargingDownloadConfig">
+      select * from LCH_BILWH.charging_download_config where upload_frequency = #{uploadFrequency}
+    </select>
+    <select id="queryWhetherHaveFile" resultType="com.asiainfo.monitor.entity.CatchFileUpload" statementType="STATEMENT">
+        ${querySql}
+    </select>
+    <select id="querySideWhetherDifferenceFile" resultType="java.lang.String" statementType="STATEMENT">
+        ${sideQuerySql}
+    </select>
+    <select id="queryWarningFlag" resultType="java.lang.Integer">
+        select warning_flag from LCH_BILWH.warning_call_config where warning_id = #{waringId}
+    </select>
+    <select id="queryAllWarningFlag" resultType="com.asiainfo.monitor.entity.WarningCallConfig">
+        select * from LCH_BILWH.warning_call_config
+    </select>
+    <select id="queryAccountWhetherHaveFile" resultType="java.lang.String">
+        ${querySql}
+    </select>
+    <select id="queryFileNum" resultType="java.lang.Integer">
+        ${querySql}
+    </select>
+    <select id="queryMessageProv" resultType="com.asiainfo.monitor.entity.CatchFileUpload">
+        ${querySql}
+    </select>
+    <select id="queryGlodDB" resultType="java.lang.String">
+        ${querySql}
+    </select>
+    <select id="commQuery" resultType="com.asiainfo.monitor.entity.CatchFileUpload">
+        ${querySql}
+    </select>
+    <select id="queryFileNumByFileName" resultType="java.lang.String">
+        ${sideQuerySql}
+    </select>
+    <select id="queryFTPCollectInfo" resultType="com.asiainfo.monitor.entity.ChargingDownloadConfig">
+        select * from LCH_BILWH.charging_download_config where calls = 2
+    </select>
+    <select id="queryChargingHostInfoByHost" resultType="com.asiainfo.monitor.entity.ChargingHostInfo">
+        select * from LCH_BILWH.CHARGING_HOST_INFO where hostdepart = #{hostCenter}
+    </select>
+    <select id="queryDBCollectInfo" resultType="com.asiainfo.monitor.entity.ChargingDownloadConfig">
+        select * from LCH_BILWH.charging_download_config where calls = 1
+    </select>
+</mapper>
